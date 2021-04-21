@@ -1,95 +1,175 @@
 package ui_animales;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+	import java.awt.FlowLayout;
+   import java.awt.event.KeyAdapter;
+   import java.awt.event.KeyEvent;
+   import java.sql.ResultSet;
+   import java.sql.Statement;
+   import javax.swing.JButton;
+   import javax.swing.JLabel;
+   import javax.swing.JScrollPane;
+   import javax.swing.JTable;
+   import javax.swing.JTextField;
+   import javax.swing.table.DefaultTableModel;
+   import javax.swing.table.TableRowSorter;
+   import java.sql.*;
+   import javax.swing.*;
+   import java.awt.event.ActionEvent;
+   import java.awt.event.ActionListener;
+   import main.conectar;
 
-public class Second_View_Mamiferos {
-	
-	//ATRIBUTOS
-	private JPanel panel;
-	private JLabel titulo;
-	private JButton volver;
-	private JTextArea lista = new JTextArea();
-    private JScrollPane panelDeslizable = new JScrollPane();
 
-    
-	public Second_View_Mamiferos(String arreglo, String name) {
-		panel = new JPanel(new BorderLayout());
+   public class Second_View_Mamiferos extends JFrame {
+  
+      DefaultTableModel modelo = new DefaultTableModel();
+      {
+           
+         modelo.addColumn("nombrecomun");
+         modelo.addColumn("nombrecientifico");
+         modelo.addColumn("edad");
+                          
+      }
+      
+      private JTextField jtffiltro;
+      
+      public Second_View_Mamiferos() {
 
-		titulo = new JLabel(".:Lista de Mamiferos"+ name);
+         JTable tabla = new JTable(modelo);
+         final TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<DefaultTableModel> ( modelo ) ;
+         tabla.setRowSorter (sorter) ;
+         JScrollPane scroll = new JScrollPane(tabla);
 
-		lista = new JTextArea();
+         String nombre_categ;
+      
+         
+         setLayout(new FlowLayout());
+            
+         add(new JLabel("REGISTRO A BUSCAR "),new FlowLayout());
+      
+         JLabel label = new JLabel("REGISTRO");
+        
+ 
+         jtffiltro = new JTextField(20);
+         setLayout(new FlowLayout());
+      
+         add(jtffiltro );
+         jtffiltro.addKeyListener(
+                new KeyAdapter() {
+                   @Override
+                   public void keyReleased(KeyEvent e) {
+                     busqueda(jtffiltro.getText());
+                  
+                    
+                  }
+               });
+        
 
-		lista.setText(arreglo);
+      
+         JButton bt = new JButton("buscar");
+         setLayout(new FlowLayout());
+         add(bt);
+        
+         bt.addActionListener (
+                new ActionListener () {
+                   public void actionPerformed ( ActionEvent e ) {
+                     String text =  jtffiltro.getText () ;
+                     if ( text.length () == 0 ) {
+                        sorter.setRowFilter ( null ) ;
+                     }
+                     else {
+                        sorter.setRowFilter ( RowFilter.regexFilter ( text )) ;
+                     }
+                  }
+               }) ;
+           
+      
+         setLayout(new FlowLayout());
+         add(scroll);
+         setLayout(new FlowLayout());
+      
+         cargardatos();
+         
+         setSize(500, 600);
+         
+      }
+  
+       private void presionCajaDeTexto() {
+         busqueda(jtffiltro.getText());
+      
+      }
+  
+   	
+  
+
+       public void cargardatos(){
+      
+      
+         try {
+
+            Statement stmt = cn.createStatement();
+        
+        
+            modelo.setRowCount(0);
+            ResultSet  result= stmt.executeQuery("select * from mamiferos");
+
+            Object[] fila = new Object[3];
+        
+         	
+         	
+            while (result.next()) {
+            
+            
+            
+               fila[0] = result.getString("nombrecomun");
+               fila[1] = result.getString("nombrecientifico");
+               fila[2] = result.getString("edad");
+               modelo.addRow(fila);
+            
+            }
+            cn.close();
+         }
+             catch (Exception e) {
+               e.printStackTrace();
+            }
+      }//fin del metodoo
+   	
+   	
+   	
+   	
+   	
+   	
+       public void busqueda(String nombre_categ) {
+         try {
+   
+            Statement s = cn.createStatement();
+        
+        
+            modelo.setRowCount(0);
+            ResultSet rs = s.executeQuery("select * from mamiferos where nombrecomun like '%"+nombre_categ+"%'");
+        
+      
+            Object[] fila = new Object[3];
+        
 		
-		JPanel pNorth = crearPNorth();
-		JPanel pCenter = crearPCenter();
-		JPanel pSouth = crearPSouth();
-		
-		panel.add(pNorth, BorderLayout.NORTH);
-		panel.add(pCenter, BorderLayout.CENTER);
-		panel.add(pSouth, BorderLayout.SOUTH);
-		
-	}
-	
-
-	//GETTER - getJPanel()
-	public JPanel getJPanel() {
-		return this.panel;
-	}
-	
-	//GETTER - getVolver()
-	public JButton getVolver() {
-		return this.volver;
-	}
-	
-	//METODO - crearPNorth()
-	public JPanel crearPNorth() {
-		JPanel p = new JPanel(new FlowLayout());
-		
-		p.add(titulo);
-	
-		return p;
-	}
-	
-
-
-	//METODO - crearPCenter()
-	public JPanel crearPCenter() {
-		JPanel p = new JPanel(new BorderLayout());
-		
-		// agregando el scrollpane al area de texto
-		panelDeslizable.setViewportView(lista);
-		// agregando a la ventana el contenedor scrollpane
-		p.add(panelDeslizable,BorderLayout.CENTER);
-
-		return p;
-	}
-	
-	//METODO - crearPSouth()
-	public JPanel crearPSouth() {
-		JPanel p = new JPanel(new FlowLayout());
-		volver = new JButton("Volver");
-		volver.addMouseListener(new Evento());
-		p.add(volver);
-		
-		return p;
-	}
-	
-	class Evento extends MouseAdapter{
-		
-		public void mouseEntered(MouseEvent e) {
-			
-		}
-		
-		public void mouseExited(MouseEvent e) {
-			
-		}
-		
-		public void mousePressed(MouseEvent e) {
-			
-		}
-	}
-
-}	
+         	
+            while (rs.next()) {
+            
+            
+            
+               fila[0] = rs.getString("nombrecomun");
+               fila[1] = rs.getString("nombrecientifico");
+               fila[2] = rs.getString("edad");
+               modelo.addRow(fila);
+            
+            
+            }
+        
+            cn.close();
+         }
+             catch (Exception e) {
+               e.printStackTrace();
+            }
+      }//fin del metodoo
+      conectar cc= new conectar();
+   Connection cn= cc.conexion();
+}

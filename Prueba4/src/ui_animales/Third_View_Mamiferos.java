@@ -3,7 +3,12 @@ package ui_animales;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
 import animales.*;
+import main.conectar;
 
 public class Third_View_Mamiferos {
 	//
@@ -38,6 +43,22 @@ public class Third_View_Mamiferos {
 					Mamiferos np = new Mamiferos(e, name, namec);
 					Lista_Mamiferos.getInstances().getLista().add(np);
 
+				       try {
+				            PreparedStatement pst = cn.prepareStatement("INSERT INTO mamiferos(nombrecientifico,nombrecomun,edad) VALUES (?,?,?)");
+				            pst.setString(1, tfNombrecientifico.getText());
+				            pst.setString(2, tfNombrecomun.getText());
+				            pst.setString(3, tfEdad.getText());
+				          
+				            pst.executeUpdate();
+				                   
+	
+			
+				        }catch (Exception e1){
+				            
+				        }
+					
+				
+					
 					tfEdad.setText("");
 					tfNombrecientifico.setText("");
 					tfNombrecomun.setText("");
@@ -76,6 +97,18 @@ public class Third_View_Mamiferos {
 					}
 				}
 				
+		    	try {
+		    		PreparedStatement pst = cn.prepareStatement("UPDATE mamiferos SET nombrecientifico='"+tfNombrecientifico.getText()+"',edad='"+tfEdad.getText()+"' WHERE nombrecomun='"+tfBuscar.getText()+"'");
+		    		pst.executeUpdate();
+		    		
+		            pst.setString(1, tfNombrecientifico.getText().trim());
+		            pst.setString(2, tfNombrecomun.getText().trim());
+		            pst.setString(3, tfEdad.getText().trim());
+		            
+		       
+		        } catch (Exception e) {
+		        }
+				
 				tfEdad.setText("");
 				tfNombrecientifico.setText("");
 				tfNombrecomun.setText("");
@@ -111,6 +144,17 @@ public class Third_View_Mamiferos {
 					}
 				}
 				
+			     try {
+			            
+			            PreparedStatement pst = cn.prepareStatement("delete from mamiferos where nombrecomun = ?");
+			            
+			            pst.setString(1, tfBuscar.getText().trim());
+			            pst.executeUpdate();
+	
+			            
+			        } catch (Exception e) {
+			        }
+			     
 				tfEdad.setText("");
 				tfNombrecientifico.setText("");
 				tfNombrecomun.setText("");
@@ -157,6 +201,24 @@ public class Third_View_Mamiferos {
 						}
 					}
 					
+				      try{
+
+				            PreparedStatement pst = cn.prepareStatement("select * from mamiferos where nombrecomun = ?");
+				            pst.setString(1, tfBuscar.getText().trim());
+				            
+				            ResultSet rs = pst.executeQuery();
+				            
+				            if(rs.next()){ 
+				            	tfNombrecomun.setText(rs.getString("nombrecomun"));
+				                tfNombrecientifico.setText(rs.getString("nombrecientifico"));
+				                tfEdad.setText(rs.getString("edad"));
+				            } else {
+				                
+				            }
+				            
+				        }catch (Exception e){
+				            
+				        }
 					if(tfEdad.getText().isEmpty() && tfNombrecientifico.getText().isEmpty() && tfNombrecomun.getText().isEmpty()) {
 						modificar.setVisible(false);
 						eliminar.setVisible(false);
@@ -322,5 +384,6 @@ public class Third_View_Mamiferos {
 			}
 		}
 	}
-
+    conectar cc= new conectar();
+    Connection cn= cc.conexion();
 }

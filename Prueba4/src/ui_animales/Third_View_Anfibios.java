@@ -3,7 +3,12 @@ package ui_animales;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
 import animales.*;
+import main.conectar;
 
 public class Third_View_Anfibios {
 	//
@@ -37,7 +42,19 @@ public class Third_View_Anfibios {
 
 					Anfibios np = new Anfibios(e, name, namec);
 					Lista_Anfibios.getInstances().getLista().add(np);
-
+				    try {
+				    	PreparedStatement pst = cn.prepareStatement("INSERT INTO anfibios(nombrecientifico,nombrecomun,edad) VALUES (?,?,?)");
+				    	pst.setString(1, tfNombrecientifico.getText());
+				    	pst.setString(2, tfNombrecomun.getText());
+				    	pst.setString(3, tfEdad.getText());
+				    	
+				    	pst.executeUpdate();
+				    	
+	
+			
+				    }catch (Exception e1){
+				            
+				    }
 					tfEdad.setText("");
 					tfNombrecientifico.setText("");
 					tfNombrecomun.setText("");
@@ -76,6 +93,19 @@ public class Third_View_Anfibios {
 					}
 				}
 				
+				
+		    	try {
+		    		PreparedStatement pst = cn.prepareStatement("UPDATE anfibios SET nombrecientifico='"+tfNombrecientifico.getText()+"',edad='"+tfEdad.getText()+"' WHERE nombrecomun='"+tfBuscar.getText()+"'");
+		    		pst.executeUpdate();
+		    		
+		            pst.setString(1, tfNombrecientifico.getText().trim());
+		            pst.setString(2, tfNombrecomun.getText().trim());
+		            pst.setString(3, tfEdad.getText().trim());
+		            
+		       
+		        } catch (Exception e) {
+		        }
+				
 				tfEdad.setText("");
 				tfNombrecientifico.setText("");
 				tfNombrecomun.setText("");
@@ -110,6 +140,19 @@ public class Third_View_Anfibios {
 						
 					}
 				}
+				
+				
+			     try {
+			            
+			            PreparedStatement pst = cn.prepareStatement("delete from anfibios where nombrecomun = ?");
+			            
+			            pst.setString(1, tfBuscar.getText().trim());
+			            pst.executeUpdate();
+	
+			            
+			        } catch (Exception e) {
+			        }
+				
 				
 				tfEdad.setText("");
 				tfNombrecientifico.setText("");
@@ -156,6 +199,28 @@ public class Third_View_Anfibios {
 														
 						}
 					}
+					
+					
+				      try{
+
+				            PreparedStatement pst = cn.prepareStatement("select * from anfibios where nombrecomun = ?");
+				            pst.setString(1, tfBuscar.getText().trim());
+				            
+				            ResultSet rs = pst.executeQuery();
+				            
+				            if(rs.next()){ 
+				            	tfNombrecomun.setText(rs.getString("nombrecomun"));
+				                tfNombrecientifico.setText(rs.getString("nombrecientifico"));
+				                tfEdad.setText(rs.getString("edad"));
+				            } else {
+				                
+				            }
+				            
+				        }catch (Exception e){
+				            
+				        }
+					
+					
 					
 					if(tfEdad.getText().isEmpty() && tfNombrecientifico.getText().isEmpty() && tfNombrecomun.getText().isEmpty()) {
 						modificar.setVisible(false);
@@ -325,5 +390,6 @@ public class Third_View_Anfibios {
 			}
 		}
 	}
-
+    conectar cc= new conectar();
+    Connection cn= cc.conexion();
 }

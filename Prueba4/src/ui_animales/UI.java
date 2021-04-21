@@ -1,10 +1,10 @@
 package ui_animales;
 
 import javax.swing.*;
-import animales.*;
-
 import java.awt.*;
 import java.awt.event.*;
+
+
 
 
 public class UI {
@@ -18,9 +18,9 @@ public class UI {
 	
 	//CONSTRUCTOR
 	public UI() {
-		
+
 		//JFRAME
-		view = new JFrame(" Lista de Mamiferos ");
+		view = new JFrame(" ZOOLOGICO ");
 		panel = new JPanel(new BorderLayout());
 		
 		view.add(panel);
@@ -41,18 +41,7 @@ public class UI {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-	
-				Second_View_Mamiferos s1 = new Second_View_Mamiferos(Lista_Mamiferos.getInstances().escribirAnimal(Lista_Mamiferos.getInstances().getLista()),":.");
-				view.setContentPane(s1.getJPanel());
-				
-				s1.getVolver().addActionListener(new ActionListener() {
-					
-					@Override
-					public void actionPerformed(ActionEvent arg0) {
-					
-						view.setContentPane(panel);
-					}
-				});
+				new Second_View_Mamiferos().setVisible(true);
 				
 				view.invalidate();
 				view.validate();
@@ -65,17 +54,7 @@ public class UI {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			
-				Second_View_Reptiles s2 = new Second_View_Reptiles(Lista_Reptiles.getInstances().escribirAnimal(Lista_Reptiles.getInstances().getLista()),":.");
-				view.setContentPane(s2.getJPanel());
-				
-				s2.getVolver().addActionListener(new ActionListener() {
-					
-					@Override
-					public void actionPerformed(ActionEvent arg0) {
-		
-						view.setContentPane(panel);
-					}
-				});
+				new Second_View_Reptiles().setVisible(true);
 				
 				view.invalidate();
 				view.validate();
@@ -88,17 +67,7 @@ public class UI {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			
-				Second_View_Anfibios s2 = new Second_View_Anfibios(Lista_Anfibios.getInstances().escribirAnimal(Lista_Anfibios.getInstances().getLista()),":.");
-				view.setContentPane(s2.getJPanel());
-				
-				s2.getVolver().addActionListener(new ActionListener() {
-					
-					@Override
-					public void actionPerformed(ActionEvent arg0) {
-		
-						view.setContentPane(panel);
-					}
-				});
+				new Second_View_Anfibios().setVisible(true);
 				
 				view.invalidate();
 				view.validate();
@@ -111,17 +80,7 @@ public class UI {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			
-				Second_View_Aves s2 = new Second_View_Aves(Lista_Aves.getInstances().escribirAnimal(Lista_Aves.getInstances().getLista()),":.");
-				view.setContentPane(s2.getJPanel());
-				
-				s2.getVolver().addActionListener(new ActionListener() {
-					
-					@Override
-					public void actionPerformed(ActionEvent arg0) {
-		
-						view.setContentPane(panel);
-					}
-				});
+				new Second_View_Aves().setVisible(true);;
 				
 				view.invalidate();
 				view.validate();
@@ -222,10 +181,17 @@ public class UI {
 				
 			}
 		});	
+		
+
 		view.setBounds(400, 150, 600, 460);
-		view.setVisible(true);
+		view.setVisible(true);    
+
 		view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		view.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		
+	
+		
+		
 	}
 	//FIN UI
 	
@@ -304,8 +270,7 @@ public class UI {
 		listaAves.setBounds(330, 175, 210, 30);
 		listaAves.addMouseListener(new Evento());
 		p.add(listaAves);		
-
-		
+	
 		return p;
 	}
 	
@@ -316,7 +281,7 @@ public class UI {
 	}
 	
 	//CLASS EVENTO
-	class Evento extends MouseAdapter{
+	private class Evento extends MouseAdapter{
 		
 		public void mouseEntered(MouseEvent e) {
 	
